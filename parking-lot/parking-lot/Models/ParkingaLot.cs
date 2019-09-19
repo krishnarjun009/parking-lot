@@ -1,27 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace parking_lot.Models
 {
-    public enum SlotSize
-    {
-        S,
-        M,
-        L,
-        XL
-    }
-
-    public enum Color
-    {
-        White,
-        Red,
-        Blue,
-        Green
-    }
-
     public class ParkingaLot
     {
         private readonly Dictionary<int, ParkingSpace> parkingSpaces;
@@ -37,17 +18,38 @@ namespace parking_lot.Models
         public void Park(Vehical vehical)
         {
             var space = TryPark(vehical);
-            if(space != null)
+            if (space != null)
             {
-                Console.WriteLine("Vehical Parked a " + vehical.slot.slotId);
+                Console.WriteLine("Vehical Parked at " + space.Id + "-" + vehical.slot.size + "" + vehical.slot.slotId);
             }
+            else
+                Console.WriteLine("No parking space is available at this moment");
         }
 
         public void UnPark(Vehical vehical)
         {
-            var space = parkingSpaces[vehical.slot.parkingSpaceId];
-            space.UnPark(vehical.licenseNumber);
-            Console.WriteLine("Unparked from " + vehical.slot.slotId);
+            if (vehical != null && vehical.slot != null)
+            {
+                var space = GetSpace(vehical.slot.parkingSpaceId);
+                space.UnPark(vehical.licenseNumber);
+                Console.WriteLine("Unparked from " + space.Id + "-" + vehical.slot.size + "" + vehical.slot.slotId);
+            }
+        }
+
+        public string[] GetParkedVehicalsByColor(Color color)
+        {
+            var list = new List<string>();
+            var values = parkingSpaces.Values;
+            foreach (var space in values)
+            {
+                var slots = space.GetSlotsByVehicalColor(color);
+                if (slots != null)
+                {
+                    foreach (var slot in slots)
+                        list.Add(slot.vehical.licenseNumber);
+                }
+            }
+            return list.ToArray();
         }
 
         private ParkingSpace TryPark(Vehical vehical)
@@ -58,7 +60,18 @@ namespace parking_lot.Models
                     return space;
             }
 
-            throw new Exception("No parking space is available at this moment");
+            return null;
+        }
+
+        private string GetParkingId(int spaceId, int slotId, SlotSize size)
+        {
+            return spaceId + "-" + size + "" + slotId;
+        }
+
+        private ParkingSpace GetSpace(int id)
+        {
+            parkingSpaces.TryGetValue(id, out ParkingSpace space);
+            return space;
         }
     }
 }
