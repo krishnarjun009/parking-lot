@@ -5,6 +5,10 @@ namespace parking_lot.Models
 {
     public sealed class ParkingSpace
     {
+        private readonly Dictionary<SlotSize, Queue<Slot>> availableSlots;
+        private readonly Dictionary<Color, Queue<Slot>> colorMapedUsedSlots;
+        private readonly Dictionary<string, Slot> licenseMapedUsedSlots;
+
         public int Id
         {
             get
@@ -12,11 +16,6 @@ namespace parking_lot.Models
                 return this.GetHashCode();
             }
         }
-
-        private readonly Dictionary<SlotSize, Queue<Slot>> availableSlots;
-
-        private readonly Dictionary<Color, Queue<Slot>> colorMapedUsedSlots;
-        private readonly Dictionary<string, Slot> licenseMapedUsedSlots;
 
         public ParkingSpace()
         {
@@ -67,11 +66,14 @@ namespace parking_lot.Models
 
         public void UnPark(string license)
         {
-            var slot = licenseMapedUsedSlots[license];
-            slot.UnPark();
+            if (licenseMapedUsedSlots.ContainsKey(license))
+            {
+                var slot = licenseMapedUsedSlots[license];
+                slot.UnPark();
 
-            licenseMapedUsedSlots.Remove(license);
-            availableSlots[slot.size].Enqueue(slot);
+                licenseMapedUsedSlots.Remove(license);
+                availableSlots[slot.size].Enqueue(slot);
+            }
         }
 
         public Slot[] GetSlotsByVehicalColor(Color color)
