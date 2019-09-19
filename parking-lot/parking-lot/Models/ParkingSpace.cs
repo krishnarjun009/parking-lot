@@ -37,11 +37,8 @@ namespace parking_lot.Models
 
         public Slot GetParkedSlot(string license)
         {
-            if(licenseMapedUsedSlots.ContainsKey(license))
-            {
-                return licenseMapedUsedSlots[license];
-            }
-            return null;
+            licenseMapedUsedSlots.TryGetValue(license, out Slot slot);
+            return slot;
         }
 
         public bool Park(Vehical vehical)
@@ -50,12 +47,7 @@ namespace parking_lot.Models
             {
                 if (!IsFull(vehical.size))
                 {
-                    var slot = GetFreeSlot(vehical.size);
-                    slot.Park(vehical);
-                    vehical.Park(slot);
-
-                    AddToLicenseMaped(vehical.licenseNumber, slot);
-                    AddToColorMaped(vehical.color, slot);
+                    ParkVehical(vehical);
                     return true;
                 }
             }
@@ -66,15 +58,7 @@ namespace parking_lot.Models
 
         public void UnPark(string license)
         {
-            if (licenseMapedUsedSlots.ContainsKey(license))
-            {
-                var slot = licenseMapedUsedSlots[license];
-                licenseMapedUsedSlots.Remove(license);
-                colorMapedUsedSlots.Remove(slot.vehical.color);
-                slot.vehical.UnPark();
-                slot.UnPark();
-                availableSlots[slot.size].Enqueue(slot);
-            }
+            UnPark(GetParkedSlot(license));
         }
 
         public Slot[] GetSlotsByVehicalColor(Color color)
@@ -91,11 +75,29 @@ namespace parking_lot.Models
             return null;
         }
 
-        public int GetFreeSlotCount(SlotSize size)
+        public int GetFreeSlotCount(SlotSize size) => availableSlots.ContainsKey(size) ?
+            availableSlots[size].Count : 0;
+
+        private void UnPark(Slot slot)
         {
-            if (availableSlots.ContainsKey(size))
-                return availableSlots[size].Count;
-            return 0;
+            if (slot != null)
+            {
+                licenseMapedUsedSlots.Remove(slot.vehical.licenseNumber);
+                colorMapedUsedSlots.Remove(slot.vehical.color);
+                slot.vehical.UnPark();
+                slot.UnPark();
+                availableSlots[slot.size].Enqueue(slot);
+            }
+        }
+
+        private void ParkVehical(Vehical vehical)
+        {
+            var slot = GetFreeSlot(vehical.size);
+            slot.Park(vehical);
+            vehical.Park(slot);
+
+            AddToLicenseMaped(vehical.licenseNumber, slot);
+            AddToColorMaped(vehical.color, slot);
         }
 
         private Slot GetFreeSlot(SlotSize size) => availableSlots[size].Dequeue();
@@ -127,7 +129,5 @@ namespace parking_lot.Models
                 throw new ParkingException("Vehical " + license + " is Parked already");
             licenseMapedUsedSlots.Add(license, slot);
         }
-
     }
-
 }
