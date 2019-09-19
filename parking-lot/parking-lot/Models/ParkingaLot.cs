@@ -1,4 +1,5 @@
-﻿using System;
+﻿using parking_lot.Models.Exception;
+using System;
 using System.Collections.Generic;
 
 namespace parking_lot.Models
@@ -22,8 +23,6 @@ namespace parking_lot.Models
             {
                 Console.WriteLine("Vehical Parked at " + space.Id + "-" + vehical.slot.size + "" + vehical.slot.slotId);
             }
-            else
-                Console.WriteLine("No parking space is available at this moment");
         }
 
         public void UnPark(Vehical vehical)
@@ -78,9 +77,8 @@ namespace parking_lot.Models
                     return GetParkingId(slot.parkingSpaceId, slot.slotId, slot.size);
             }
 
-            throw new Exception("License " + license + " Not found in the parking");
+            throw new ParkingException("License " + license + " Not found in the parking");
         }
-
 
         private ParkingSpace TryPark(Vehical vehical)
         {

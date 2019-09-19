@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using parking_lot.Models.Exception;
+using System.Collections.Generic;
 
 namespace parking_lot.Models
 {
@@ -46,16 +47,20 @@ namespace parking_lot.Models
 
         public bool Park(Vehical vehical)
         {
-            if (!IsFull(vehical.size))
+            try
             {
-                var slot = GetFreeSlot(vehical.size);
-                slot.Park(vehical);
-                vehical.Park(slot);
+                if (!IsFull(vehical.size))
+                {
+                    var slot = GetFreeSlot(vehical.size);
+                    slot.Park(vehical);
+                    vehical.Park(slot);
 
-                AddToLicenseMaped(vehical.licenseNumber, slot);
-                AddToColorMaped(vehical.color, slot);
-                return true;
+                    AddToLicenseMaped(vehical.licenseNumber, slot);
+                    AddToColorMaped(vehical.color, slot);
+                    return true;
+                }
             }
+            catch(ParkingException ex) { System.Console.WriteLine(ex.Message); }
 
             return false;
         }
@@ -108,6 +113,8 @@ namespace parking_lot.Models
 
         private void AddToLicenseMaped(string license, Slot slot)
         {
+            if (licenseMapedUsedSlots.ContainsKey(license))
+                throw new ParkingException("Vehical " + license + " is Parked already");
             licenseMapedUsedSlots.Add(license, slot);
         }
 
