@@ -3,6 +3,13 @@ using System.Collections.Generic;
 
 namespace parking_lot.Models
 {
+    public struct ParkingSpaceStatus
+    {
+        public int slotNo;
+        public string licenseNumber;
+        public string color;
+    }
+
     public sealed class ParkingSpace
     {
         private readonly Dictionary<SlotSize, Queue<Slot>> availableSlots;
@@ -72,6 +79,27 @@ namespace parking_lot.Models
                 }
             }
 
+            return null;
+        }
+
+        public ParkingSpaceStatus[] GetStatus()
+        {
+            if(licenseMapedUsedSlots.Count > 0)
+            {
+                int i = 0;
+                var slots = new ParkingSpaceStatus[licenseMapedUsedSlots.Count];
+                foreach(var slot in licenseMapedUsedSlots.Values)
+                {
+                    slots[i++] = new ParkingSpaceStatus()
+                    {
+                        licenseNumber = slot.vehical.licenseNumber,
+                        slotNo = slot.slotId,
+                        color = slot.vehical.color.ToString()
+                    };
+                }
+
+                return slots;
+            }
             return null;
         }
 
