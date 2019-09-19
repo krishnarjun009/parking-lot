@@ -108,9 +108,9 @@ namespace parking_lot.Models
             else
             {
                 queue = new Queue<Slot>();
-                queue.Enqueue(slot);
                 colorMapedUsedSlots.Add(color, queue);
             }
+            queue.Enqueue(slot);
         }
 
         private void AddToLicenseMaped(string license, Slot slot)

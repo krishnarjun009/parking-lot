@@ -10,10 +10,8 @@ namespace parking_lot.Models
 
         public ParkingaLot()
         {
-            var parkingSpacesAvailable = ParkingLotConfig.GetParkingSpaces();
             parkingSpaces = new Dictionary<int, ParkingSpace>();
-            foreach (var space in parkingSpacesAvailable)
-                parkingSpaces.Add(space.Id, space);
+            Init(ParkingLotConfig.GetParkingSpaces());
         }
 
         public void Park(Vehical vehical)
@@ -89,6 +87,14 @@ namespace parking_lot.Models
             }
 
             return null;
+        }
+
+        private void Init(ParkingSpace[] parkingSpace)
+        {
+            if (parkingSpace == null)
+                return;
+            foreach (var space in parkingSpace)
+                parkingSpaces.Add(space.Id, space);
         }
 
         private string GetParkingId(int spaceId, int slotId, SlotSize size)
