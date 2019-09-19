@@ -69,9 +69,9 @@ namespace parking_lot.Models
             if (licenseMapedUsedSlots.ContainsKey(license))
             {
                 var slot = licenseMapedUsedSlots[license];
-                slot.UnPark();
-
                 licenseMapedUsedSlots.Remove(license);
+                colorMapedUsedSlots.Remove(slot.vehical.color);
+                slot.UnPark();
                 availableSlots[slot.size].Enqueue(slot);
             }
         }
@@ -88,6 +88,13 @@ namespace parking_lot.Models
             }
 
             return null;
+        }
+
+        public int GetFreeSlotCount(SlotSize size)
+        {
+            if (availableSlots.ContainsKey(size))
+                return availableSlots[size].Count;
+            return 0;
         }
 
         private Slot GetFreeSlot(SlotSize size) => availableSlots[size].Dequeue();
