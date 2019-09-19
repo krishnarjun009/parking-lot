@@ -71,6 +71,7 @@ namespace parking_lot.Models
                 var slot = licenseMapedUsedSlots[license];
                 licenseMapedUsedSlots.Remove(license);
                 colorMapedUsedSlots.Remove(slot.vehical.color);
+                slot.vehical.UnPark();
                 slot.UnPark();
                 availableSlots[slot.size].Enqueue(slot);
             }
