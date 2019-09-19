@@ -1,6 +1,7 @@
 # parking-lot
 
 Problem Statement
+
 I own a multi-storey parking lot that can hold up to 'n' cars at any given point in time.
 Each slot is given a number starting at 1 increasing with increasing distance from the
 entry point in steps of one. I want to create an automated ticketing system that
@@ -16,7 +17,9 @@ Due to government regulation, the system should provide me with the ability to f
 out:
 
 ● Registration numbers of all cars of a particular colour.
+
 ● Slot number in which a car with a given registration number is parked.
+
 ● Slot numbers of all slots where a car of a particular colour is parked.
 
 We interact with the system via a simple set of commands which produce a specific
