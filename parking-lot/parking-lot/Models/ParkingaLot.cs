@@ -52,6 +52,22 @@ namespace parking_lot.Models
             return list.ToArray();
         }
 
+        public int[] GetParkedSlotsByVehicalColor(Color color)
+        {
+            var list = new List<int>();
+            var values = parkingSpaces.Values;
+            foreach (var space in values)
+            {
+                var slots = space.GetSlotsByVehicalColor(color);
+                if (slots != null)
+                {
+                    foreach (var slot in slots)
+                        list.Add(slot.slotId);
+                }
+            }
+            return list.ToArray();
+        }
+
         private ParkingSpace TryPark(Vehical vehical)
         {
             foreach(var space in parkingSpaces.Values)
