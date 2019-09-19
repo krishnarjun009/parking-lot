@@ -68,6 +68,20 @@ namespace parking_lot.Models
             return list.ToArray();
         }
 
+        public string GetParkedVehicalSlotNumber(string license)
+        {
+            var values = parkingSpaces.Values;
+            foreach (var space in values)
+            {
+                var slot = space.GetParkedSlot(license);
+                if (slot != null)
+                    return GetParkingId(slot.parkingSpaceId, slot.slotId, slot.size);
+            }
+
+            throw new Exception("License " + license + " Not found in the parking");
+        }
+
+
         private ParkingSpace TryPark(Vehical vehical)
         {
             foreach(var space in parkingSpaces.Values)

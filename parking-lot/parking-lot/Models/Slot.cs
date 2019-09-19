@@ -6,7 +6,7 @@ namespace parking_lot.Models
         public int slotId;
         public int parkingSpaceId;
         public SlotSize size;
-        private Vehical vehical;
+        public Vehical vehical { get; private set; }
 
         public Slot(int id, int spaceId, SlotSize size)
         {
